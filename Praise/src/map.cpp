@@ -157,3 +157,19 @@ vector< vector<int> > Map::GetWalkMap()
 {
     return WalkMap;
 }
+
+sf::Vector2i Map::GetWalkTile()
+{
+    vector<sf::Vector2i> RdmTile;
+
+    for(int j = 0; j < WalkMap.size(); j++)
+    {
+        for(int i = 0; i < WalkMap[j].size(); i++)
+        {
+            if(WalkMap[j][i] == W_OUI)
+            RdmTile.push_back(sf::Vector2i(i, j));
+        }
+    }
+
+    return RdmTile[rand() % RdmTile.size()];
+}

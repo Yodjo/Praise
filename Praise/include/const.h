@@ -1,6 +1,8 @@
 #ifndef CONST_H_INCLUDED
 #define CONST_H_INCLUDED
 
+#include <SFML/Graphics.hpp>
+
 enum {W_OUI, W_EAU, W_TREE, W_NON};
 enum {EAU, PLAGE, PLAINE, MONTAGNE, PIC};
 
@@ -36,6 +38,13 @@ struct Node
 {
     int Qualite;
     std::pair<int, int> Parent;
+};
+
+typedef struct CivInfo CivInfo;
+struct CivInfo
+{
+    std::string Nom;
+    sf::Color Couleur;
 };
 
 #endif // CONST_H_INCLUDED

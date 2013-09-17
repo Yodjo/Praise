@@ -25,6 +25,8 @@ class Map
 
         /** getter */
         std::vector< std::vector<int> > GetWalkMap();
+        sf::Vector2i GetWalkTile();
+
     protected:
     private:
         std::vector< std::vector<int> > TiledMap;
