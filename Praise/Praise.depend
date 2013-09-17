@@ -1,18 +1,15 @@
 # depslib dependency file v1.0
-1379351300 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\main.cpp
+1379439079 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\main.cpp
 	<iostream>
-	<cmath>
-	<list>
-	<map>
 	<vector>
 	<SFML/Graphics.hpp>
 	<SFML/Window.hpp>
 	<SFML/System.hpp>
 	"include/Path.h"
 	"include/const.h"
-	"include/noisegenerator.h"
+	"include/map.h"
 
-1379184507 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\path.cpp
+1379439079 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\path.cpp
 	"../include/Path.h"
 
 1379184344 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\path.h
@@ -357,7 +354,7 @@
 	<string>
 	<vector>
 
-1379184383 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\const.h
+1379438677 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\const.h
 
 1379271727 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\noisegenerator.cpp
 	"../include/noisegenerator.h"
@@ -366,4 +363,16 @@
 	<vector>
 
 1379271727 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\noisegenerator.h
+
+1379438975 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\map.cpp
+	"../include/map.h"
+
+1379438894 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\map.h
+	<iostream>
+	<vector>
+	<SFML/Graphics.hpp>
+	<SFML/Window.hpp>
+	<SFML/System.hpp>
+	"const.h"
+	"noisegenerator.h"
 

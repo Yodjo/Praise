@@ -1,14 +1,18 @@
-== 39.4% Praise ==
+== 50% Praise ==
 
 = Pathfinding	*100%*
 -Pathfinder fonction	100%
 -Treading	100%
 
-= Map Generation *18.2%*
--Génération de la map 37.5%
---Bruit		75%
---Conversion	0%
--Génération des arbres 0%
+= Map Generation *100%*
+-Génération de la map 100%
+--Bruit		100%
+--Conversion	100%
+-Génération des arbres 100%
+
+= Game Engine 	*0%*
+-Affichage tiled	0%
+-Gestion Des iput	0%
 
 = Entity	*0%*
 -Gestion :	0%

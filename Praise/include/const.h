@@ -1,6 +1,25 @@
 #ifndef CONST_H_INCLUDED
 #define CONST_H_INCLUDED
 
+enum {W_OUI, W_EAU, W_TREE, W_NON};
+enum {EAU, PLAGE, PLAINE, MONTAGNE, PIC};
+
+#define TAILLE_ARBRE_MAX 5
+
+enum {SAPIN, POMMIER};
+
+typedef struct Arbre Arbre;
+struct Arbre
+{
+    Arbre(int mType = -1) : Type(mType)
+    {
+
+    }
+
+    int Type;
+    int Taille;
+};
+
 typedef struct Treaded Treaded;
 struct Treaded
 {

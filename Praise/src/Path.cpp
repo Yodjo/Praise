@@ -54,6 +54,8 @@ pair<int,int> Path::meilleur_noeud(map<pair<int,int>, Node>& l)
 
 vector<pair<int, int> > Path::GetPath(pair<int, int> PositionDepart, pair<int, int> arrivee)
 {
+    cout << "\rRecherche de chemin : ";
+    int ct = 0;
         //A*
     map<pair<int, int>, Node> Ouverte;
     map<pair<int, int>, Node> Fermee;
@@ -72,6 +74,8 @@ vector<pair<int, int> > Path::GetPath(pair<int, int> PositionDepart, pair<int, i
     /// Boucle tant que l'on a pas de solution ou que l'on sait qu'il n'y a pas de solution
     while(current != arrivee && !Ouverte.empty())
     {
+        ct++;
+        cout << "\rRecherche de chemin : " << ct;
         /// On prend le noeud avec la meilleur qualité
         current = meilleur_noeud(Ouverte);
 
