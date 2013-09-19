@@ -7,6 +7,8 @@ Entity::Entity()
     Civ.Nom = "Humain";
     Civ.Couleur = sf::Color(220, 200, 120);
 
+    Cherche = false;
+
     Coord.x = 0;
     Coord.y = 0;
 }
@@ -58,19 +60,44 @@ void Entity::draw(sf::RenderWindow &App)
 
 Treaded Entity::Action(Map World)
 {
-    if(Chemin.size() < 1)
-    {
-        sf::Vector2i Dest = World.GetWalkTile();
 
-        return Treaded(&Chemin, pair<int, int>(Coord.x,Coord.y), pair<int, int>(Dest.x, Dest.y));
-    }
-    else
+    if(TimingAction.getElapsedTime() >= sf::milliseconds(ACTION_TIME))
     {
-        Coord.x = Chemin[0].second;
-        Coord.y = Chemin[0].first;
-        Chemin.erase(Chemin.begin());
+        if(Chemin.size() < 1 /*&& !Cherche*/)
+        {
+            //cout << "lancer la recherche " << endl;
+            sf::Vector2i Dest = World.GetWalkTile();
 
-        return Treaded(&Chemin, pair<int, int>(0, 0), pair<int, int>(0, 0));
+            TimingAction.restart();
+
+            Chemin = Path::GetPath(pair<int, int>(Coord.y,Coord.x), pair<int, int>(Dest.y, Dest.x));
+            //Cherche = true;
+
+
+
+            //return Treaded(&Chemin, pair<int, int>(Coord.y,Coord.x), pair<int, int>(Dest.y, Dest.x));
+        }
+        else if(Chemin.size() > 0)
+        {
+            //cout << "Deplacement" << endl;
+            Cherche = false;
+
+            Coord.x = Chemin[0].second;
+            Coord.y = Chemin[0].first;
+            Chemin.erase(Chemin.begin());
+
+            TimingAction.restart();
+
+            //return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0));
+        }
+       /* else
+        {
+            TimingAction.restart();
+
+            //return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0));
+        }*/
+
+
     }
 
 }

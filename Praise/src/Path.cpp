@@ -4,6 +4,8 @@ using namespace std;
 
 
 vector< vector<int> > *Path::Map;
+list<Treaded> *Path::Waiting;
+sf::Mutex Path::mutexPath;
 
 Path::Path()
 {
@@ -17,9 +19,13 @@ Path::~Path()
 
 /// FONCTIONS D'INITIALISATION :
 
-void Path::SetMap(std::vector<std::vector<int> > *WalkMap)
+void Path::Init(std::vector<std::vector<int> > *WalkMap, list<Treaded> *pWaiting)
 {
+    Waiting = pWaiting;
     Map = WalkMap;
+    Waiting->clear();
+
+    cout << "Waiting size : " << Waiting->size() << endl;
 }
 
 /// PATH FINDING
@@ -54,7 +60,7 @@ pair<int,int> Path::meilleur_noeud(map<pair<int,int>, Node>& l)
 
 vector<pair<int, int> > Path::GetPath(pair<int, int> PositionDepart, pair<int, int> arrivee)
 {
-    cout << "\rRecherche de chemin : ";
+    //cout << "\rRecherche de chemin : ";
     int ct = 0;
         //A*
     map<pair<int, int>, Node> Ouverte;
@@ -72,10 +78,10 @@ vector<pair<int, int> > Path::GetPath(pair<int, int> PositionDepart, pair<int, i
     Ouverte[current] = Depart;
 
     /// Boucle tant que l'on a pas de solution ou que l'on sait qu'il n'y a pas de solution
-    while(current != arrivee && !Ouverte.empty())
+    while(current != arrivee && !Ouverte.empty() && ct <= (Map->size() * Map[0].size())/1.5 )
     {
         ct++;
-        cout << "\rRecherche de chemin : " << ct;
+        //cout << "\rRecherche de chemin : " << ct;
         /// On prend le noeud avec la meilleur qualité
         current = meilleur_noeud(Ouverte);
 
@@ -104,7 +110,7 @@ vector<pair<int, int> > Path::GetPath(pair<int, int> PositionDepart, pair<int, i
                     continue;
 
                 //Si la case est un obstacle on passe
-                if( Map->at(i)[j] == 1)
+                if( Map->at(i)[j] != W_OUI)
                     continue;
 
                     ///On a donc une case valide
@@ -135,10 +141,13 @@ vector<pair<int, int> > Path::GetPath(pair<int, int> PositionDepart, pair<int, i
         }
     }
 
-    if(Ouverte.empty())
+    if(Ouverte.empty() || ct > (Map->size() * Map[0].size())/1.5 )
     {
         vector<pair<int, int> >Chemin;
         return Chemin;
+        cout << ct;
+
+        ct = 0;
     }
     else
     {
@@ -155,11 +164,86 @@ vector<pair<int, int> > Path::GetPath(pair<int, int> PositionDepart, pair<int, i
             Chemin.insert(Chemin.begin(), prec);
         }
 
+        ct = 0;
+
         return Chemin;
     }
 }
 
+
 void Path::GetPathTread(Treaded &TreadingInfo)
 {
-    *(TreadingInfo.Chemin) = GetPath(TreadingInfo.PositionDepart, TreadingInfo.arrivee);
+    vector< pair<int, int> > Ch = GetPath(TreadingInfo.PositionDepart, TreadingInfo.arrivee);
+
+    for(int i = 0; i < Ch.size(); i++)
+    {
+        mutexPath.lock();
+        TreadingInfo.Chemin->push_back(Ch[i]);
+        mutexPath.unlock();
+    }
 }
+
+void Path::PathThread(Tinit init)
+{
+    cout << "Path thread lunched" << endl;
+
+   /* mutexPath.lock();
+    cout <<  "line " << __LINE__ << " : "<< Waiting.size() << endl;
+    Waiting.clear();
+    cout <<  "line " << __LINE__ << " : "<< Waiting.size() << endl;
+    mutexPath.unlock();*/
+
+    while(init.pApp->isOpen())
+    {
+        if(Waiting->size() > 0)
+        {
+            cout <<  "line " << __LINE__ << " : "<< Waiting->size() << endl;
+
+            mutexPath.lock();
+            Treaded Last =  Waiting->front();
+            Waiting->pop_front();
+            mutexPath.unlock();
+
+            GetPathTread(Last);
+        }
+
+    }
+
+
+}
+
+void Path::AddPathTask(Treaded TreadingInfo)
+{
+    mutexPath.lock();
+    bool ok = true;
+
+    cout <<  "line " << __LINE__ << " : " << Waiting->size() << endl;
+
+    for(list<Treaded>::iterator it = Waiting->begin(); it != Waiting->end(); it++)
+    {
+        if(it->PositionDepart.first == TreadingInfo.PositionDepart.first && it->PositionDepart.second == TreadingInfo.PositionDepart.second)
+        ok = false;
+    }
+
+    if(ok)
+    Waiting->push_back(TreadingInfo);
+
+    mutexPath.unlock();
+}
+
+void Path::LockMutex()
+{
+    mutexPath.lock();
+}
+
+void Path::UnLockMutex()
+{
+    mutexPath.unlock();
+}
+
+list<Treaded>* Path::GetWaitingAdd()
+{
+    return Waiting;
+}
+
+//revoire les fonctions de treading

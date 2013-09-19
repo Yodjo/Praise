@@ -8,7 +8,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 
-
+//TOdo : corriger kes entité, le path finding ect ...
 
 #include "Path.h"
 #include "const.h"
@@ -32,9 +32,11 @@ class Entity
         void draw(sf::RenderWindow &App);
     protected:
     private:
+        sf::Clock TimingAction;
         CivInfo Civ;
         sf::Vector2i Coord;
         std::vector< std::pair<int,int> > Chemin;
+        bool Cherche;
 
 };
 

@@ -1,7 +1,8 @@
 # depslib dependency file v1.0
-1379444427 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\main.cpp
+1379615890 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\main.cpp
 	<iostream>
 	<vector>
+	<list>
 	<SFML/Graphics.hpp>
 	<SFML/Window.hpp>
 	<SFML/System.hpp>
@@ -10,15 +11,16 @@
 	"include/map.h"
 	"include/entity.h"
 
-1379439079 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\path.cpp
+1379616901 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\path.cpp
 	"../include/Path.h"
 
-1379184344 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\path.h
+1379616544 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\path.h
 	<iostream>
 	<vector>
 	<cmath>
 	<list>
 	<map>
+	<algorithm>
 	"const.h"
 
 1365233432 c:\users\propriétaire\documents\programmation\sfml 2.0\sfml-2.0\include\sfml\graphics.hpp
@@ -355,8 +357,9 @@
 	<string>
 	<vector>
 
-1379442990 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\const.h
+1379614494 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\const.h
 	<SFML/Graphics.hpp>
+	<list>
 
 1379271727 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\noisegenerator.cpp
 	"../include/noisegenerator.h"
@@ -366,7 +369,7 @@
 
 1379271727 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\noisegenerator.h
 
-1379443267 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\map.cpp
+1379509236 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\map.cpp
 	"../include/map.h"
 
 1379443086 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\map.h
@@ -378,7 +381,7 @@
 	"const.h"
 	"noisegenerator.h"
 
-1379444354 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\entity.h
+1379513195 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\entity.h
 	<iostream>
 	<vector>
 	<SFML/Graphics.hpp>
@@ -388,6 +391,6 @@
 	"const.h"
 	"map.h"
 
-1379444383 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\entity.cpp
+1379616787 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\entity.cpp
 	"../include/entity.h"
 

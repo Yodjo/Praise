@@ -2,11 +2,13 @@
 #define CONST_H_INCLUDED
 
 #include <SFML/Graphics.hpp>
+#include <list>
 
 enum {W_OUI, W_EAU, W_TREE, W_NON};
 enum {EAU, PLAGE, PLAINE, MONTAGNE, PIC};
 
 #define TAILLE_ARBRE_MAX 5
+#define ACTION_TIME 200
 
 enum {SAPIN, POMMIER};
 
@@ -45,6 +47,18 @@ struct CivInfo
 {
     std::string Nom;
     sf::Color Couleur;
+};
+
+typedef struct Tinit Tinit;
+struct Tinit
+{
+    Tinit(sf::RenderWindow *App, std::list< Treaded > *Waiting) : pApp(App), pWaiting(Waiting)
+    {
+
+    }
+
+    sf::RenderWindow *pApp;
+    std::list< Treaded > *pWaiting;
 };
 
 #endif // CONST_H_INCLUDED

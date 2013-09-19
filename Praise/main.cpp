@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-
+#include <list>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -13,7 +13,6 @@
 
 
 using namespace std;
-
 
 int main()
 {
@@ -34,8 +33,9 @@ int main()
 
     vector< vector<int> > WalkMap;
     WalkMap = WorldMap.GetWalkMap();
-    Path::SetMap(&WalkMap);
 
+    list<Treaded> Wt;
+    Path::Init(&WalkMap, &Wt);
 
     //Tableau d'entité :
     vector<Entity> Entite;
@@ -44,11 +44,13 @@ int main()
 
     // Create the main window
     sf::RenderWindow App(sf::VideoMode(960, 540), "Praise - v0.39.4");
+    sf::View vue = App.getDefaultView();
+    vue.setCenter(0, 0);
+    App.setView(vue);
 
-    Entite.push_back(Entity(WorldMap.GetWalkTile()));
-    Entite.push_back(Entity(WorldMap.GetWalkTile()));
-    Entite.push_back(Entity(WorldMap.GetWalkTile()));
-    Entite.push_back(Entity(WorldMap.GetWalkTile()));
+    /*sf::Thread PathThreading(&Path::PathThread, Tinit(&App, Path::GetWaitingAdd()) );
+    PathThreading.launch();*/
+
     Entite.push_back(Entity(WorldMap.GetWalkTile()));
 
     // Start the game loop
@@ -61,24 +63,59 @@ int main()
             // Close window : exit
             if (event.type == sf::Event::Closed)
             App.close();
+
+            if(event.type == sf::Event::KeyPressed)
+            {
+                if (event.key.code == sf::Keyboard::Up)
+                {
+                    vue.move(0, -1);
+                }
+                if (event.key.code == sf::Keyboard::Down)
+                {
+                    vue.move(0, 1);
+                }
+                if (event.key.code == sf::Keyboard::Left)
+                {
+                    vue.move(-1, 0);
+                }
+                if (event.key.code == sf::Keyboard::Right)
+                {
+                    vue.move(1, 0);
+                }
+
+                if (event.key.code == sf::Keyboard::Add)
+                {
+                    vue.zoom(0.5f);
+                }
+                if (event.key.code == sf::Keyboard::Subtract)
+                {
+                    vue.zoom(1.5f);
+                }
+            }
+
+
+            App.setView(vue);
         }
 
         App.clear();
 
+
         WorldMap.affMiniMap(App);
+
+
 
         for(int i = 0; i < Entite.size(); i++)
         {
             Treaded A = Entite[i].Action(WorldMap);
-            if(A.PositionDepart.first == 0 && A.PositionDepart.second == 0 && A.arrivee.first == 0 && A.arrivee.second == 0)
-            {
 
-            }
-            else
+            /*if(A.Chemin == NULL)
             {
-                sf::Thread PathThread(&Path::GetPathTread, A);
-                PathThread.launch();
+                //cout << "line : " << __LINE__ << endl;
             }
+            else if(A.Chemin != NULL)
+            {
+                Path::AddPathTask(A);
+            }*/
 
             Entite[i].draw(App);
         }
@@ -90,7 +127,7 @@ int main()
     return 0;
 }
 
-// A faire (Propriétaire#9#): Revoir le systeme de multitreading
+// A faire (Propriétaire#9#): Reajouter le systeme de multitreading
 
 
 // A faire (Propriétaire#2#): Rendre le path finding meilleur (cout f, g, h, avoir le cjhemin vraimeent le plus court.

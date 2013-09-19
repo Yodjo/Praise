@@ -6,6 +6,7 @@
 #include <cmath>
 #include <list>
 #include <map>
+#include <algorithm>
 
 #include "const.h"
 
@@ -19,11 +20,18 @@ class Path
         virtual ~Path();
 
         /** Path Initialisation : */
-        static void SetMap(std::vector<std::vector<int> > *WalkMap);
+        static void Init(std::vector<std::vector<int> > *WalkMap, std::list<Treaded> *pWaiting);
 
         /** Get du path */
+        static void PathThread(Tinit init);
         static std::vector<std::pair<int, int> > GetPath(std::pair<int, int> PositionDepart, std::pair<int, int> arrivee);
         static void GetPathTread(Treaded &TreadingInfo);
+        static void AddPathTask(Treaded TreadingInfo);
+        static std::list<Treaded>* GetWaitingAdd();
+
+        /** Mutex */
+        static void LockMutex();
+        static void UnLockMutex();
 
     protected:
         static int dist(std::pair<int, int> a, std::pair<int, int> b);
@@ -33,6 +41,9 @@ class Path
 
     private:
     static std::vector< std::vector<int> > *Map;
+    static std::list<Treaded> *Waiting;
+    static sf::Mutex mutexPath;
+
 };
 
 #endif // PATH_H

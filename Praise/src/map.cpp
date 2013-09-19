@@ -150,6 +150,8 @@ void Map::affMiniMap(sf::RenderWindow &App)
     sf::Sprite SpMap;
     SpMap.setTexture(Txmap);
 
+    SpMap.setPosition(0, 0);
+
     App.draw(SpMap);
 }
 
