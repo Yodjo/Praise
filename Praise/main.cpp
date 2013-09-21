@@ -108,11 +108,11 @@ int main()
         {
             Treaded A = Entite[i].Action(WorldMap);
 
-            if(A.Chemin == NULL)
+            if(A.Chemin == NULL /*|| (A.arrivee.first == 0 && A.arrivee.second == 0) || (A.PositionDepart.first == 0 && A.PositionDepart.second == 0)*/)
             {
                 //cout << __FUNCTION__ << "- line " << __LINE__ << endl;
             }
-            else if(A.Chemin != NULL)
+            else //if(A.Chemin != NULL)
             {
                 Path::AddPathTask(A);
             }

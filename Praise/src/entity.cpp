@@ -11,6 +11,8 @@ Entity::Entity()
 
     Coord.x = 0;
     Coord.y = 0;
+
+    Chemin.clear();
 }
 
 Entity::Entity(sf::Vector2i nCoord)
@@ -63,7 +65,7 @@ Treaded Entity::Action(Map World)
 
     if(TimingAction.getElapsedTime() >= sf::milliseconds(ACTION_TIME))
     {
-        if(Chemin.size() < 1 && !Cherche)
+        if(Chemin.size() < 1 && Cherche == false)
         {
             cout << "Recherche lancee : " << __LINE__  << " -- "<< Chemin.size() << endl;
             //cout << "lancer la recherche " << endl;
@@ -95,7 +97,7 @@ Treaded Entity::Action(Map World)
         }
         else
         {
-            cout << "@ " << __LINE__ << " -- " <<Chemin.size() << endl;
+            cout << "@ " << __LINE__ << " -- " << Chemin.size() << endl;
             TimingAction.restart();
 
             return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0));
@@ -103,5 +105,7 @@ Treaded Entity::Action(Map World)
 
 
     }
+    else
+    return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0));
 
 }
