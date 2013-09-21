@@ -63,39 +63,43 @@ Treaded Entity::Action(Map World)
 
     if(TimingAction.getElapsedTime() >= sf::milliseconds(ACTION_TIME))
     {
-        if(Chemin.size() < 1 /*&& !Cherche*/)
+        if(Chemin.size() < 1 && !Cherche)
         {
+            cout << "Recherche lancee : " << __LINE__  << " -- "<< Chemin.size() << endl;
             //cout << "lancer la recherche " << endl;
             sf::Vector2i Dest = World.GetWalkTile();
 
             TimingAction.restart();
 
-            Chemin = Path::GetPath(pair<int, int>(Coord.y,Coord.x), pair<int, int>(Dest.y, Dest.x));
-            //Cherche = true;
+            //Chemin = Path::GetPath(pair<int, int>(Coord.y,Coord.x), pair<int, int>(Dest.y, Dest.x));
+            Cherche = true;
 
-
-
-            //return Treaded(&Chemin, pair<int, int>(Coord.y,Coord.x), pair<int, int>(Dest.y, Dest.x));
+            return Treaded(&Chemin, pair<int, int>(Coord.y,Coord.x), pair<int, int>(Dest.y, Dest.x));
         }
         else if(Chemin.size() > 0)
         {
+            cout << "Moving : " << __LINE__ << " -- " << Chemin.size() << endl;
             //cout << "Deplacement" << endl;
             Cherche = false;
 
             Coord.x = Chemin[0].second;
             Coord.y = Chemin[0].first;
+
+            Path::LockMutex();
             Chemin.erase(Chemin.begin());
+            Path::UnLockMutex();
 
             TimingAction.restart();
 
-            //return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0));
+            return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0));
         }
-       /* else
+        else
         {
+            cout << "@ " << __LINE__ << " -- " <<Chemin.size() << endl;
             TimingAction.restart();
 
-            //return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0));
-        }*/
+            return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0));
+        }
 
 
     }

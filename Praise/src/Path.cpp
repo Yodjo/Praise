@@ -175,11 +175,20 @@ void Path::GetPathTread(Treaded &TreadingInfo)
 {
     vector< pair<int, int> > Ch = GetPath(TreadingInfo.PositionDepart, TreadingInfo.arrivee);
 
-    for(int i = 0; i < Ch.size(); i++)
+    mutexPath.lock();
+    if(!TreadingInfo.Chemin->empty())
+    TreadingInfo.Chemin->clear();
+    mutexPath.unlock();
+
+    if( Ch.size() > 0)
     {
-        mutexPath.lock();
-        TreadingInfo.Chemin->push_back(Ch[i]);
-        mutexPath.unlock();
+        for(int i = 0; i < Ch.size(); i++)
+        {
+            mutexPath.lock();
+            TreadingInfo.Chemin->push_back(Ch[i]);
+            mutexPath.unlock();
+        }
+
     }
 }
 
@@ -195,16 +204,15 @@ void Path::PathThread(Tinit init)
 
     while(init.pApp->isOpen())
     {
-        if(Waiting->size() > 0)
+        if(!Waiting->empty())
         {
-            cout <<  "line " << __LINE__ << " : "<< Waiting->size() << endl;
-
             mutexPath.lock();
             Treaded Last =  Waiting->front();
             Waiting->pop_front();
             mutexPath.unlock();
 
             GetPathTread(Last);
+
         }
 
     }
@@ -217,7 +225,7 @@ void Path::AddPathTask(Treaded TreadingInfo)
     mutexPath.lock();
     bool ok = true;
 
-    cout <<  "line " << __LINE__ << " : " << Waiting->size() << endl;
+    cout << __FUNCTION__ << "- line " << __LINE__ << " : " << Waiting->size() << endl;
 
     for(list<Treaded>::iterator it = Waiting->begin(); it != Waiting->end(); it++)
     {

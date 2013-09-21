@@ -48,8 +48,8 @@ int main()
     vue.setCenter(0, 0);
     App.setView(vue);
 
-    /*sf::Thread PathThreading(&Path::PathThread, Tinit(&App, Path::GetWaitingAdd()) );
-    PathThreading.launch();*/
+    sf::Thread PathThreading(&Path::PathThread, Tinit(&App, Path::GetWaitingAdd()) );
+    PathThreading.launch();
 
     Entite.push_back(Entity(WorldMap.GetWalkTile()));
 
@@ -108,14 +108,14 @@ int main()
         {
             Treaded A = Entite[i].Action(WorldMap);
 
-            /*if(A.Chemin == NULL)
+            if(A.Chemin == NULL)
             {
-                //cout << "line : " << __LINE__ << endl;
+                //cout << __FUNCTION__ << "- line " << __LINE__ << endl;
             }
             else if(A.Chemin != NULL)
             {
                 Path::AddPathTask(A);
-            }*/
+            }
 
             Entite[i].draw(App);
         }
