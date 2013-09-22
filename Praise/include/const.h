@@ -9,6 +9,10 @@ enum {EAU, PLAGE, PLAINE, MONTAGNE, PIC};
 
 #define TAILLE_ARBRE_MAX 5
 #define ACTION_TIME 200
+#define NO_LAG_TIME 200
+
+//Info
+#define VIEW_SIZE 10
 
 enum {SAPIN, POMMIER};
 
@@ -27,12 +31,13 @@ struct Arbre
 typedef struct Treaded Treaded;
 struct Treaded
 {
-    Treaded(std::vector<std::pair<int, int> > *C, std::pair<int, int>D, std::pair<int, int>A) : Chemin(C), PositionDepart(D), arrivee(A)
+    Treaded(std::vector<std::pair<int, int> > *C, std::pair<int, int>D, std::pair<int, int>A, bool *Rc) : Chemin(C), PositionDepart(D), arrivee(A), Recherche(Rc)
     {Chemin = C;}
 
     std::vector<std::pair<int, int> > *Chemin;
     std::pair<int, int> PositionDepart;
     std::pair<int, int> arrivee;
+    bool *Recherche;
 };
 
 typedef struct Node Node;

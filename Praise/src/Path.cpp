@@ -190,6 +190,10 @@ void Path::GetPathTread(Treaded &TreadingInfo)
         }
 
     }
+
+    mutexPath.lock();
+    *(TreadingInfo.Recherche) = false;
+    mutexPath.unlock();
 }
 
 void Path::PathThread(Tinit init)

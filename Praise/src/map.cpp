@@ -175,3 +175,46 @@ sf::Vector2i Map::GetWalkTile()
 
     return RdmTile[rand() % RdmTile.size()];
 }
+
+sf::Vector2i Map::GetTree(sf::Vector2i pos)
+{
+    for(int j = -VIEW_SIZE; j < VIEW_SIZE; j++) //y
+    {
+        if(j < 0 || j >= TreeMap.size())
+            continue;
+
+        for(int i = -VIEW_SIZE; i < VIEW_SIZE; i++) //x
+        {
+            if(i < 0 || i >= TreeMap[j].size())
+                continue;
+
+            if(TreeMap[j][i].Type != -1)
+            {
+                    cout << "a";
+                    for(int Tj = -1; Tj < 2; Tj++)
+                    {
+                        if(j + Tj < 0 || j + Tj >= WalkMap.size())
+                            continue;
+
+                        for(int Ti = -1; Ti < 2; Tj++)
+                        {
+                            if(i + Ti < 0 || i + Ti >= WalkMap[j+Tj].size())
+                            continue;
+
+                            if(isWalkable(sf::Vector2i(i+Ti, j+Tj) ) == W_OUI)
+                            return sf::Vector2i(i+Ti, j+Tj);
+                        }
+                    }
+
+            }
+        }
+    }
+
+    return sf::Vector2i(-1, -1);
+}
+
+int Map::isWalkable(sf::Vector2i pos)
+{
+    return WalkMap[pos.y][pos.x];
+}
+

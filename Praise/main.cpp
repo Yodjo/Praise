@@ -52,6 +52,15 @@ int main()
     PathThreading.launch();
 
     Entite.push_back(Entity(WorldMap.GetWalkTile()));
+    Entite.push_back(Entity(WorldMap.GetWalkTile()));
+    Entite.push_back(Entity(WorldMap.GetWalkTile()));
+    Entite.push_back(Entity(WorldMap.GetWalkTile()));
+    Entite.push_back(Entity(WorldMap.GetWalkTile()));
+
+
+    //Boucle d'action des entity.
+    int i = 0;
+    sf::Clock EntWhile;
 
     // Start the game loop
     while (App.isOpen())
@@ -103,8 +112,8 @@ int main()
         WorldMap.affMiniMap(App);
 
 
-
-        for(int i = 0; i < Entite.size(); i++)
+        EntWhile.restart();
+        while(i < Entite.size() && EntWhile.getElapsedTime() < sf::milliseconds(NO_LAG_TIME))
         {
             Treaded A = Entite[i].Action(WorldMap);
 
@@ -116,9 +125,13 @@ int main()
             {
                 Path::AddPathTask(A);
             }
-
-            Entite[i].draw(App);
+            i++;
         }
+        if(i >= Entite.size())
+        i = 0;
+
+        for(int y = 0; y < Entite.size(); y++)
+        Entite[y].draw(App);
 
         App.display();
 

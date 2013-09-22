@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <vector>
-
+#include <cmath>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -26,6 +26,8 @@ class Map
         /** getter */
         std::vector< std::vector<int> > GetWalkMap();
         sf::Vector2i GetWalkTile();
+        sf::Vector2i GetTree(sf::Vector2i pos);
+        int isWalkable(sf::Vector2i pos);
 
     protected:
     private:
