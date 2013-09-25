@@ -60,7 +60,7 @@ void Entity::draw(sf::RenderWindow &App)
     App.draw(SpEnt);
 }
 
-Treaded Entity::Action(Map World)
+void Entity::Action(Map World)
 {
 
     //Deplacement sur une tile rdm
@@ -113,66 +113,70 @@ Treaded Entity::Action(Map World)
         //A attendu la fin du "tour" ( ACTION_TIME millisecondes -> actuellement 200 ms)
         if(!Chemin.empty())  //Possede déjà un chemin (/objectif)
         {
-            cout << "Moving : " << __LINE__ << " -- " << Chemin.size() << endl;
+            //cout << "Moving : " << __LINE__ << " -- " << Chemin.size() << endl;
             Cherche = false;
 
             Coord.x = Chemin[0].second;
             Coord.y = Chemin[0].first;
 
-            Path::LockMutex();
             Chemin.erase(Chemin.begin());
-            Path::UnLockMutex();
 
             TimingAction.restart();
 
-            return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0), NULL);
+           // return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0), NULL);
+
+
         }
         else if(Chemin.empty() && !Cherche) //Couper des arbres
         {
-            cout << "TreeCuting : " << __LINE__ << " -- " << Chemin.size() << endl;
+            //cout << "TreeCuting : " << __LINE__ << " -- " << Chemin.size() << endl;
 
-            return Ac_Cut_Tree(World);
+            Ac_Cut_Tree(World);
         }
         else
         {
-            cout << "Other : " << __LINE__ << " -- " << Chemin.size() << endl;
+            //cout << "Other : " << __LINE__ << " -- " << Chemin.size() << endl;
             //cout << "@ " << __LINE__ << " -- " << Chemin.size() << endl;
             TimingAction.restart();
 
-            return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0), NULL);
+            //return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0), NULL);
         }
+
     }
-    else
-    return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0), NULL);
+
+    //else
+    //return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0), NULL);
 }
 
-Treaded Entity::Ac_Rdm(Map World)
+void Entity::Ac_Rdm(Map World)
 {
-    cout << "-> Ac_Rdm " << __LINE__  << " -- "<< Chemin.size() << endl;
+
+    //cout << "-> Ac_Rdm " << __LINE__  << " -- "<< Chemin.size() << endl;
     sf::Vector2i Dest = World.GetWalkTile();
 
     TimingAction.restart();
 
     //Chemin = Path::GetPath(pair<int, int>(Coord.y,Coord.x), pair<int, int>(Dest.y, Dest.x));
     Cherche = true;
-    return Treaded(&Chemin, pair<int, int>(Coord.y,Coord.x), pair<int, int>(Dest.y, Dest.x), &Cherche);
+
+    Path::AddPathTask(Treaded(&Chemin, pair<int, int>(Coord.y,Coord.x), pair<int, int>(Dest.y, Dest.x), &Cherche));
 
 }
 
-Treaded Entity::Ac_Cut_Tree(Map World)
+void Entity::Ac_Cut_Tree(Map World)
 {
     //cout << "Recherche lancee (Arbre) : " << __LINE__  << " -- "<< Chemin.size() << endl;
-    sf::Vector2i Dest = World.GetTree(Coord);
+    /*sf::Vector2i Dest = World.GetTree(Coord);
 
     TimingAction.restart();
 
     if(Dest.x != -1 && Dest.y != -1)
     {
         Cherche = true;
-        return Treaded(&Chemin, pair<int, int>(Coord.y,Coord.x), pair<int, int>(Dest.y, Dest.x), &Cherche);
+        Path::AddPathTask(readed(&Chemin, pair<int, int>(Coord.y,Coord.x), pair<int, int>(Dest.y, Dest.x), &Cherche));
     }
     else
-    {
-        return Ac_Rdm(World);
-    }
+    {*/
+        Ac_Rdm(World);
+    //}
 }

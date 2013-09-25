@@ -9,7 +9,7 @@ enum {EAU, PLAGE, PLAINE, MONTAGNE, PIC};
 
 #define TAILLE_ARBRE_MAX 5
 #define ACTION_TIME 200
-#define NO_LAG_TIME 200
+#define NO_LAG_TIME 40
 
 //Info
 #define VIEW_SIZE 10

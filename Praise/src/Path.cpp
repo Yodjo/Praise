@@ -191,9 +191,7 @@ void Path::GetPathTread(Treaded &TreadingInfo)
 
     }
 
-    mutexPath.lock();
     *(TreadingInfo.Recherche) = false;
-    mutexPath.unlock();
 }
 
 void Path::PathThread(Tinit init)
@@ -226,21 +224,25 @@ void Path::PathThread(Tinit init)
 
 void Path::AddPathTask(Treaded TreadingInfo)
 {
-    mutexPath.lock();
+
     bool ok = true;
 
-    cout << __FUNCTION__ << "- line " << __LINE__ << " : " << Waiting->size() << endl;
+    //cout << __FUNCTION__ << "- line " << __LINE__ << " : " << Waiting->size() << endl;
 
-    for(list<Treaded>::iterator it = Waiting->begin(); it != Waiting->end(); it++)
+   /* for(list<Treaded>::iterator it = Waiting->begin(); it != Waiting->end(); it++)
     {
         if(it->PositionDepart.first == TreadingInfo.PositionDepart.first && it->PositionDepart.second == TreadingInfo.PositionDepart.second)
         ok = false;
-    }
+    }*/
 
     if(ok)
-    Waiting->push_back(TreadingInfo);
+    {
+        //mutexPath.lock();
+        Waiting->push_back(TreadingInfo);
+        //mutexPath.unlock();
+    }
 
-    mutexPath.unlock();
+
 }
 
 void Path::LockMutex()

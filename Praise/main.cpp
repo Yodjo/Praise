@@ -51,12 +51,10 @@ int main()
     sf::Thread PathThreading(&Path::PathThread, Tinit(&App, Path::GetWaitingAdd()) );
     PathThreading.launch();
 
-    Entite.push_back(Entity(WorldMap.GetWalkTile()));
-    Entite.push_back(Entity(WorldMap.GetWalkTile()));
-    Entite.push_back(Entity(WorldMap.GetWalkTile()));
-    Entite.push_back(Entity(WorldMap.GetWalkTile()));
+    for(int d = 0; d < 100; d++)
     Entite.push_back(Entity(WorldMap.GetWalkTile()));
 
+    App.setFramerateLimit(120);
 
     //Boucle d'action des entity.
     int i = 0;
@@ -111,27 +109,24 @@ int main()
 
         WorldMap.affMiniMap(App);
 
+        sf::Clock Test;
+        Test.restart();
+        cout << __LINE__ << " : " << Test.getElapsedTime().asMicroseconds() << endl;
 
         EntWhile.restart();
+        //EntWhile.restart();
         while(i < Entite.size() && EntWhile.getElapsedTime() < sf::milliseconds(NO_LAG_TIME))
         {
-            Treaded A = Entite[i].Action(WorldMap);
-
-            if(A.Chemin == NULL /*|| (A.arrivee.first == 0 && A.arrivee.second == 0) || (A.PositionDepart.first == 0 && A.PositionDepart.second == 0)*/)
-            {
-                //cout << __FUNCTION__ << "- line " << __LINE__ << endl;
-            }
-            else //if(A.Chemin != NULL)
-            {
-                Path::AddPathTask(A);
-            }
-            i++;
+           Entite[i].Action(WorldMap);
+           i++;
         }
         if(i >= Entite.size())
         i = 0;
 
-        for(int y = 0; y < Entite.size(); y++)
-        Entite[y].draw(App);
+        for(int j = 0; j < Entite.size(); j++)
+        Entite[j].draw(App);
+
+        cout << __LINE__ << " : " << Test.getElapsedTime().asMicroseconds() << endl;
 
         App.display();
 

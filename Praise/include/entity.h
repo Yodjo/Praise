@@ -26,9 +26,9 @@ class Entity
         virtual ~Entity();
 
         /** Entity action */
-        Treaded Action(Map World);
-        Treaded Ac_Cut_Tree(Map World);
-        Treaded Ac_Rdm(Map World);
+        void Action(Map World);
+        void Ac_Cut_Tree(Map World);
+        void Ac_Rdm(Map World);
 
         /** Entity affichage */
         void draw(sf::RenderWindow &App);

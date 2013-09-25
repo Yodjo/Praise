@@ -105,7 +105,11 @@ void Map::Gen(int TailleX, int TailleY)
                 }
             }
     }
+
+    MajWalkRdm();
 }
+
+// A faire (Propriétaire#1#): Mettre a jour les walk map rdm a partir de la walk map tout les tour de boucle au cas ou ? Ou le faire quandd la map est modifier;
 
 void Map::affMiniMap(sf::RenderWindow &App)
 {
@@ -160,10 +164,8 @@ vector< vector<int> > Map::GetWalkMap()
     return WalkMap;
 }
 
-sf::Vector2i Map::GetWalkTile()
+void Map::MajWalkRdm()
 {
-    vector<sf::Vector2i> RdmTile;
-
     for(int j = 0; j < WalkMap.size(); j++)
     {
         for(int i = 0; i < WalkMap[j].size(); i++)
@@ -172,7 +174,10 @@ sf::Vector2i Map::GetWalkTile()
             RdmTile.push_back(sf::Vector2i(i, j));
         }
     }
+}
 
+sf::Vector2i Map::GetWalkTile()
+{
     return RdmTile[rand() % RdmTile.size()];
 }
 
@@ -190,7 +195,7 @@ sf::Vector2i Map::GetTree(sf::Vector2i pos)
 
             if(TreeMap[j][i].Type != -1)
             {
-                    cout << "a";
+                    //cout << "a";
                     for(int Tj = -1; Tj < 2; Tj++)
                     {
                         if(j + Tj < 0 || j + Tj >= WalkMap.size())
