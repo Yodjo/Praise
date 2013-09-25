@@ -123,10 +123,11 @@ int main()
         if(i >= Entite.size())
         i = 0;
 
+        cout << __LINE__ << " : " << Test.getElapsedTime().asMicroseconds() << endl;
+
         for(int j = 0; j < Entite.size(); j++)
         Entite[j].draw(App);
 
-        cout << __LINE__ << " : " << Test.getElapsedTime().asMicroseconds() << endl;
 
         App.display();
 

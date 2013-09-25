@@ -60,7 +60,7 @@ void Entity::draw(sf::RenderWindow &App)
     App.draw(SpEnt);
 }
 
-void Entity::Action(Map World)
+void Entity::Action(Map &World)
 {
 
     //Deplacement sur une tile rdm
@@ -148,7 +148,7 @@ void Entity::Action(Map World)
     //return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0), NULL);
 }
 
-void Entity::Ac_Rdm(Map World)
+void Entity::Ac_Rdm(Map &World)
 {
 
     //cout << "-> Ac_Rdm " << __LINE__  << " -- "<< Chemin.size() << endl;
@@ -163,7 +163,7 @@ void Entity::Ac_Rdm(Map World)
 
 }
 
-void Entity::Ac_Cut_Tree(Map World)
+void Entity::Ac_Cut_Tree(Map &World)
 {
     //cout << "Recherche lancee (Arbre) : " << __LINE__  << " -- "<< Chemin.size() << endl;
     /*sf::Vector2i Dest = World.GetTree(Coord);
