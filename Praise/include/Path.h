@@ -23,10 +23,10 @@ class Path
         static void Init(std::vector<std::vector<int> > *WalkMap, std::list<Treaded> *pWaiting);
 
         /** Get du path */
-        static void PathThread(Tinit init);
-        static std::vector<std::pair<int, int> > GetPath(std::pair<int, int> PositionDepart, std::pair<int, int> arrivee);
+        static void PathThread(Tinit &init);
+        static std::vector<std::pair<int, int> > GetPath(const std::pair<int, int> &PositionDepart,const std::pair<int, int> &arrivee);
         static void GetPathTread(Treaded &TreadingInfo);
-        static void AddPathTask(Treaded TreadingInfo);
+        static void AddPathTask(Treaded &TreadingInfo);
         static std::list<Treaded>* GetWaitingAdd();
 
         /** Mutex */
@@ -34,8 +34,8 @@ class Path
         static void UnLockMutex();
 
     protected:
-        static int dist(std::pair<int, int> a, std::pair<int, int> b);
-        static bool in_liste(std::pair<int,int> n, std::map<std::pair<int,int>, Node>& l);
+        static int dist(const std::pair<int, int> &a,const std::pair<int, int> &b);
+        static bool in_liste(std::pair<int,int> &n, std::map<std::pair<int,int>, Node>& l);
         static std::pair<int,int> meilleur_noeud(std::map<std::pair<int,int>, Node>& l);
 
 

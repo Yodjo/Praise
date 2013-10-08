@@ -1,0 +1,40 @@
+== 50% Praise ==
+
+= Pathfinding	*100%*
+-Pathfinder fonction	100%
+-Treading	100%
+
+= Map Generation *100%*
+-Génération de la map 100%
+--Bruit		100%
+--Conversion	100%
+-Génération des arbres 100%
+
+= Entity	*0%*
+-Action :	0%
+--Couper les arbres	0%
+---GetTree 100 %
+---CutTree 0%
+---Action_Tree 30%
+---CutTreeZone 0%
+---GetRessource 0%
+
+--Entrepots 0% (1Tile d'entrepots = 2/3 item ?)
+---Couper les arbre avant (10%)
+---Definir une stockpile 0%
+---PutRessource 0%
+---GetRessource 0%
+
+--Créer sa maison	0% (Une tile d'entrepots dans la maison)
+---Couper les arbre avant (10%)
+---Getressources 0%
+---PutRessources 0%
+---Construire 0%
+
+--Cultiver un champ	0%
+---Couper les arbre avant (10%)
+---Retourner 0%
+---Planter 0%
+---Attendre 0%
+---Recolter 0%
+

@@ -7,6 +7,17 @@
 enum {W_OUI, W_EAU, W_TREE, W_NON};
 enum {EAU, PLAGE, PLAINE, MONTAGNE, PIC};
 
+//Enumeration d'action
+//Action :
+enum {CUT_TREE, BUILD_HOUSE, CULTIVER};
+//Sous  action :
+    //Couper arbre :
+enum {TROUVE_ARBRE, ALLER_ARBRE, COUPE_ARBRE, ENTREPOSER_ARBRE};
+    //Construire maison :
+enum {CLEAN_ZONE, GET_RESSOURCE, BUILD_BLOCK};
+    //Cultiver :
+enum {RETOURNER, PLANTER, ATTENDRE, RECOLTER};
+
 #define TAILLE_ARBRE_MAX 5
 #define ACTION_TIME 200
 #define NO_LAG_TIME 40
@@ -34,11 +45,21 @@ struct Treaded
     Treaded(std::vector<std::pair<int, int> > *C, std::pair<int, int>D, std::pair<int, int>A, bool *Rc) : Chemin(C), PositionDepart(D), arrivee(A), Recherche(Rc)
     {Chemin = C;}
 
+    bool operator==(Treaded const &a) const
+    {
+        if(a.Chemin == Chemin && a.Recherche == Recherche)
+            return true;
+        else
+            return false;
+    }
+
     std::vector<std::pair<int, int> > *Chemin;
     std::pair<int, int> PositionDepart;
     std::pair<int, int> arrivee;
     bool *Recherche;
 };
+
+
 
 typedef struct Node Node;
 struct Node

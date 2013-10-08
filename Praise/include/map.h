@@ -26,9 +26,13 @@ class Map
 
         /** getter */
         std::vector< std::vector<int> > GetWalkMap();
+        int getSizeX();
+        int getSizeY();
         sf::Vector2i GetWalkTile();
-        sf::Vector2i GetTree(sf::Vector2i pos);
-        int isWalkable(sf::Vector2i pos);
+        sf::Vector2i GetTree(const sf::Vector2i &pos, const int VueSize);
+        int isWalkable(const sf::Vector2i &pos);
+        int isWalkable(const int x, const int y);
+        int CutTree(const sf::Vector2i &pos);
 
 
     protected:

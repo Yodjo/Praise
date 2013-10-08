@@ -2,7 +2,6 @@
 
 using namespace std;
 
-
 vector< vector<int> > *Path::Map;
 list<Treaded> *Path::Waiting;
 sf::Mutex Path::mutexPath;
@@ -29,12 +28,12 @@ void Path::Init(std::vector<std::vector<int> > *WalkMap, list<Treaded> *pWaiting
 }
 
 /// PATH FINDING
-int Path::dist(pair<int, int> a, pair<int, int> b)
+int Path::dist(const pair<int, int> &a, const pair<int, int> &b)
 {
      return sqrt((a.first - b.first)*(a.first - b.first) + (a.second - b.second)* (a.second - b.second));
 }
 
-bool Path::in_liste(pair<int,int> n, map<pair<int,int>, Node>& l)
+bool Path::in_liste(pair<int,int> &n, map<pair<int,int>, Node>& l)
 {
     map<pair<int,int>, Node>::iterator i = l.find(n);
     if (i==l.end())
@@ -48,7 +47,7 @@ pair<int,int> Path::meilleur_noeud(map<pair<int,int>, Node>& l)
     float di = l.begin()->second.Qualite;
     pair<int,int> m_noeud = l.begin()->first;
 
-    for (map<pair<int,int>, Node>::iterator i = l.begin(); i!=l.end(); i++)
+    for (map<pair<int,int>, Node>::iterator i = l.begin(); i!=l.end(); ++i)
         if (i->second.Qualite < di)
         {
             di = i->second.Qualite;
@@ -58,8 +57,10 @@ pair<int,int> Path::meilleur_noeud(map<pair<int,int>, Node>& l)
     return m_noeud;
 }
 
-vector<pair<int, int> > Path::GetPath(pair<int, int> PositionDepart, pair<int, int> arrivee)
+vector<pair<int, int> > Path::GetPath(const pair<int, int> &PositionDepart, const pair<int, int> &arrivee)
 {
+    sf::Clock T;
+    cout << "*(" << arrivee.second << ";" << arrivee.first << ") : " << __LINE__ << " -> t: " << T.getElapsedTime().asMicroseconds() << endl;
     //cout << "\rRecherche de chemin : ";
     int ct = 0;
         //A*
@@ -77,6 +78,8 @@ vector<pair<int, int> > Path::GetPath(pair<int, int> PositionDepart, pair<int, i
 
     Ouverte[current] = Depart;
 
+    cout << "*" << __LINE__ << " : " << T.getElapsedTime().asMicroseconds() << endl;
+
     /// Boucle tant que l'on a pas de solution ou que l'on sait qu'il n'y a pas de solution
     while(current != arrivee && !Ouverte.empty() && ct <= (Map->size() * Map[0].size())/1.5 )
     {
@@ -92,13 +95,13 @@ vector<pair<int, int> > Path::GetPath(pair<int, int> PositionDepart, pair<int, i
         Ouverte.erase(current);
 
         /// On teste toutes les case autour
-        for(int i = current.first-1; i <= current.first+1; i++)
+        for(int i = current.first-1; i <= current.first+1; ++i)
         {
             //Si la case se trouve en dehors des limite on ne la teste pas.
             if(i < 0 || i > Map->size()-1)
                 continue;
 
-            for(int j = current.second-1; j <= current.second+1; j++)
+            for(int j = current.second-1; j <= current.second+1; ++j)
             {
 
                 //Si la case se trouve en dehors des limite on ne la teste pas.
@@ -182,7 +185,7 @@ void Path::GetPathTread(Treaded &TreadingInfo)
 
     if( Ch.size() > 0)
     {
-        for(int i = 0; i < Ch.size(); i++)
+        for(int i = 0; i < Ch.size(); ++i)
         {
             mutexPath.lock();
             TreadingInfo.Chemin->push_back(Ch[i]);
@@ -190,11 +193,17 @@ void Path::GetPathTread(Treaded &TreadingInfo)
         }
 
     }
+    else
+    {
+        mutexPath.lock();
+        TreadingInfo.Chemin->push_back(pair<int, int>(-1, -1));
+        mutexPath.unlock();
+    }
 
     *(TreadingInfo.Recherche) = false;
 }
 
-void Path::PathThread(Tinit init)
+void Path::PathThread(Tinit &init)
 {
     cout << "Path thread lunched" << endl;
 
@@ -206,6 +215,9 @@ void Path::PathThread(Tinit init)
 
     while(init.pApp->isOpen())
     {
+        if(!Waiting->empty())
+            Waiting->unique();
+
         if(!Waiting->empty())
         {
             mutexPath.lock();
@@ -222,26 +234,21 @@ void Path::PathThread(Tinit init)
 
 }
 
-void Path::AddPathTask(Treaded TreadingInfo)
+bool T(Treaded &A, Treaded &B)
 {
+    if(A.PositionDepart.first == B.PositionDepart.first && A.PositionDepart.second == B.PositionDepart.second)
+        return false;
+    else
+        return true;
+}
 
-    bool ok = true;
-
+void Path::AddPathTask(Treaded &TreadingInfo)
+{
     //cout << __FUNCTION__ << "- line " << __LINE__ << " : " << Waiting->size() << endl;
 
-   /* for(list<Treaded>::iterator it = Waiting->begin(); it != Waiting->end(); it++)
-    {
-        if(it->PositionDepart.first == TreadingInfo.PositionDepart.first && it->PositionDepart.second == TreadingInfo.PositionDepart.second)
-        ok = false;
-    }*/
-
-    if(ok)
-    {
         //mutexPath.lock();
         Waiting->push_back(TreadingInfo);
         //mutexPath.unlock();
-    }
-
 
 }
 

@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1380113222 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\main.cpp
+1381076633 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\main.cpp
 	<iostream>
 	<vector>
 	<list>
@@ -11,10 +11,10 @@
 	"include/map.h"
 	"include/entity.h"
 
-1380110125 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\path.cpp
+1381258591 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\path.cpp
 	"../include/Path.h"
 
-1379616544 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\path.h
+1381254708 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\path.h
 	<iostream>
 	<vector>
 	<cmath>
@@ -357,7 +357,7 @@
 	<string>
 	<vector>
 
-1380112505 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\const.h
+1381256747 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\const.h
 	<SFML/Graphics.hpp>
 	<list>
 
@@ -369,10 +369,10 @@
 
 1379271727 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\noisegenerator.h
 
-1380111312 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\map.cpp
+1381055759 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\map.cpp
 	"../include/map.h"
 
-1380111312 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\map.h
+1381055708 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\map.h
 	<iostream>
 	<vector>
 	<cmath>
@@ -382,9 +382,10 @@
 	"const.h"
 	"noisegenerator.h"
 
-1380113295 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\entity.h
+1381055876 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\entity.h
 	<iostream>
 	<vector>
+	<cmath>
 	<SFML/Graphics.hpp>
 	<SFML/Window.hpp>
 	<SFML/System.hpp>
@@ -392,6 +393,16 @@
 	"const.h"
 	"map.h"
 
-1380113222 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\entity.cpp
+1381259534 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\entity.cpp
 	"../include/entity.h"
+
+1381076229 source:c:\users\propriétaire\documents\programmation\mes programmes\praise\src\stock.cpp
+	"../include/stock.h"
+
+1381057521 c:\users\propriétaire\documents\programmation\mes programmes\praise\include\stock.h
+	<iostream>
+	<SFML/Graphics.hpp>
+	<vector>
+	<algorithm>
+	"const.h"
 

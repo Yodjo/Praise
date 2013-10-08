@@ -11,6 +11,9 @@
 #include "include/map.h"
 #include "include/entity.h"
 
+           // cout <<  "line " << __LINE__ << endl;
+
+           //Todo : Crash du jeu
 
 using namespace std;
 
@@ -111,7 +114,7 @@ int main()
 
         sf::Clock Test;
         Test.restart();
-        cout << __LINE__ << " : " << Test.getElapsedTime().asMicroseconds() << endl;
+        //cout << __LINE__ << " : " << Test.getElapsedTime().asMicroseconds() << endl;
 
         EntWhile.restart();
         //EntWhile.restart();
@@ -123,7 +126,7 @@ int main()
         if(i >= Entite.size())
         i = 0;
 
-        cout << __LINE__ << " : " << Test.getElapsedTime().asMicroseconds() << endl;
+        //cout << __LINE__ << " : " << Test.getElapsedTime().asMicroseconds() << endl;
 
         for(int j = 0; j < Entite.size(); j++)
         Entite[j].draw(App);
@@ -135,8 +138,6 @@ int main()
 
     return 0;
 }
-
-// A faire (Propriétaire#9#): Reajouter le systeme de multitreading
 
 
 // A faire (Propriétaire#2#): Rendre le path finding meilleur (cout f, g, h, avoir le cjhemin vraimeent le plus court.

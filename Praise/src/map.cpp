@@ -109,8 +109,6 @@ void Map::Gen(int TailleX, int TailleY)
     MajWalkRdm();
 }
 
-// A faire (Propriétaire#1#): Mettre a jour les walk map rdm a partir de la walk map tout les tour de boucle au cas ou ? Ou le faire quandd la map est modifier;
-
 void Map::affMiniMap(sf::RenderWindow &App)
 {
     sf::Image imgMap;
@@ -181,45 +179,64 @@ sf::Vector2i Map::GetWalkTile()
     return RdmTile[rand() % RdmTile.size()];
 }
 
-sf::Vector2i Map::GetTree(sf::Vector2i pos)
+sf::Vector2i Map::GetTree(const sf::Vector2i &pos, const int VueSize)
 {
-    for(int j = -VIEW_SIZE; j < VIEW_SIZE; j++) //y
+    vector<sf::Vector2i> PosRdmArbre;
+    for(int j = -VueSize; j < VueSize; j++) //y
     {
-        if(j < 0 || j >= TreeMap.size())
+        if(j+pos.y < 0 || j+pos.y >= TreeMap.size())
             continue;
 
-        for(int i = -VIEW_SIZE; i < VIEW_SIZE; i++) //x
+        for(int i = -VueSize; i < VueSize; i++) //x
         {
-            if(i < 0 || i >= TreeMap[j].size())
+            if(i+pos.x < 0 || i+pos.x >= TreeMap[j].size())
                 continue;
 
-            if(TreeMap[j][i].Type != -1)
+            if(TreeMap[j+pos.y][i+pos.x].Type != -1)
             {
-                    //cout << "a";
-                    for(int Tj = -1; Tj < 2; Tj++)
-                    {
-                        if(j + Tj < 0 || j + Tj >= WalkMap.size())
-                            continue;
-
-                        for(int Ti = -1; Ti < 2; Tj++)
-                        {
-                            if(i + Ti < 0 || i + Ti >= WalkMap[j+Tj].size())
-                            continue;
-
-                            if(isWalkable(sf::Vector2i(i+Ti, j+Tj) ) == W_OUI)
-                            return sf::Vector2i(i+Ti, j+Tj);
-                        }
-                    }
-
+                PosRdmArbre.push_back(sf::Vector2i(i+pos.x, j+pos.y));
             }
         }
     }
 
+    if(!PosRdmArbre.empty())
+    return PosRdmArbre[rand() % PosRdmArbre.size()];
+    else
     return sf::Vector2i(-1, -1);
 }
 
-int Map::isWalkable(sf::Vector2i pos)
+int Map::isWalkable(const sf::Vector2i &pos)
 {
+    if(pos.x > 0 && pos.y > 0 && pos.x < WalkMap.size() && pos.y < WalkMap.size())
     return WalkMap[pos.y][pos.x];
+    else
+    return W_NON;
 }
 
+int Map::isWalkable(const int x,const int y)
+{
+    if(x > 0 && y > 0 && x < WalkMap.size() && y < WalkMap.size())
+    return WalkMap[y][x];
+    else
+    return W_NON;
+}
+
+int Map::CutTree(const sf::Vector2i &pos)
+{
+    WalkMap[pos.y][pos.x] = W_OUI;
+    TreeMap[pos.y][pos.x].Type = -1;
+
+    MajWalkRdm();
+
+    return TreeMap[pos.y][pos.x].Taille;
+}
+
+int Map::getSizeX()
+{
+    return TiledMap[0].size();
+}
+
+int Map::getSizeY()
+{
+    return TiledMap.size();
+}
