@@ -4,6 +4,7 @@ using namespace std;
 
 vector< vector<int> > *Path::Map;
 list<Treaded> *Path::Waiting;
+list<Treaded> *Path::WaitingProche;
 sf::Mutex Path::mutexPath;
 
 Path::Path()
@@ -18,9 +19,10 @@ Path::~Path()
 
 /// FONCTIONS D'INITIALISATION :
 
-void Path::Init(std::vector<std::vector<int> > *WalkMap, list<Treaded> *pWaiting)
+void Path::Init(std::vector<std::vector<int> > *WalkMap, list<Treaded> *pWaiting, list<Treaded> *pWaitingPr)
 {
     Waiting = pWaiting;
+    WaitingProche = pWaitingPr;
     Map = WalkMap;
     Waiting->clear();
 
@@ -30,7 +32,7 @@ void Path::Init(std::vector<std::vector<int> > *WalkMap, list<Treaded> *pWaiting
 /// PATH FINDING
 int Path::dist(const pair<int, int> &a, const pair<int, int> &b)
 {
-     return sqrt((a.first - b.first)*(a.first - b.first) + (a.second - b.second)* (a.second - b.second));
+    return sqrt((a.first - b.first)*(a.first - b.first) + (a.second - b.second)* (a.second - b.second));
 }
 
 bool Path::in_liste(pair<int,int> &n, map<pair<int,int>, Node>& l)
@@ -59,10 +61,8 @@ pair<int,int> Path::meilleur_noeud(map<pair<int,int>, Node>& l)
 
 vector<pair<int, int> > Path::GetPath(const pair<int, int> &PositionDepart, const pair<int, int> &arrivee)
 {
-    sf::Clock T;
-    cout << "*(" << arrivee.second << ";" << arrivee.first << ") : " << __LINE__ << " -> t: " << T.getElapsedTime().asMicroseconds() << endl;
-    //cout << "\rRecherche de chemin : ";
     int ct = 0;
+
         //A*
     map<pair<int, int>, Node> Ouverte;
     map<pair<int, int>, Node> Fermee;
@@ -78,15 +78,19 @@ vector<pair<int, int> > Path::GetPath(const pair<int, int> &PositionDepart, cons
 
     Ouverte[current] = Depart;
 
-    cout << "*" << __LINE__ << " : " << T.getElapsedTime().asMicroseconds() << endl;
+    sf::Time t_m;
+
 
     /// Boucle tant que l'on a pas de solution ou que l'on sait qu'il n'y a pas de solution
     while(current != arrivee && !Ouverte.empty() && ct <= (Map->size() * Map[0].size())/1.5 )
     {
         ct++;
+
         //cout << "\rRecherche de chemin : " << ct;
         /// On prend le noeud avec la meilleur qualité
         current = meilleur_noeud(Ouverte);
+
+
 
         /// On l'ajoute a la liste fermée
         Fermee[current] = Ouverte[current];
@@ -142,15 +146,15 @@ vector<pair<int, int> > Path::GetPath(const pair<int, int> &PositionDepart, cons
 
             }
         }
+
     }
 
     if(Ouverte.empty() || ct > (Map->size() * Map[0].size())/1.5 )
     {
         vector<pair<int, int> >Chemin;
-        return Chemin;
-        cout << ct;
-
         ct = 0;
+
+        return Chemin;
     }
     else
     {
@@ -203,6 +207,36 @@ void Path::GetPathTread(Treaded &TreadingInfo)
     *(TreadingInfo.Recherche) = false;
 }
 
+void Path::GetPathTreadPr(Treaded &TreadingInfo)
+{
+    vector< pair<int, int> > Ch = GetPath(TreadingInfo.PositionDepart, TreadingInfo.arrivee);
+
+    mutexPath.lock();
+    if(!TreadingInfo.Chemin->empty())
+    TreadingInfo.Chemin->clear();
+    mutexPath.unlock();
+
+    if( Ch.size() > 0)
+    {
+        for(int i = 0; i < Ch.size(); ++i)
+        {
+            mutexPath.lock();
+            TreadingInfo.Chemin->push_back(Ch[i]);
+            mutexPath.unlock();
+        }
+
+    }
+    else
+    {
+        mutexPath.lock();
+         // Waiting->push_back(TreadingInfo);
+        TreadingInfo.Chemin->push_back(pair<int, int>(-1, -1));
+        mutexPath.unlock();
+    }
+
+    *(TreadingInfo.Recherche) = false;
+}
+
 void Path::PathThread(Tinit &init)
 {
     cout << "Path thread lunched" << endl;
@@ -234,6 +268,38 @@ void Path::PathThread(Tinit &init)
 
 }
 
+//Path threading proche
+void Path::PathThreadPr(Tinit &init)
+{
+    cout << "Path thread proche(not far) lunched" << endl;
+
+   /* mutexPath.lock();
+    cout <<  "line " << __LINE__ << " : "<< Waiting.size() << endl;
+    Waiting.clear();
+    cout <<  "line " << __LINE__ << " : "<< Waiting.size() << endl;
+    mutexPath.unlock();*/
+
+    while(init.pApp->isOpen())
+    {
+        if(!WaitingProche->empty())
+            WaitingProche->unique();
+
+        if(!WaitingProche->empty())
+        {
+            mutexPath.lock();
+            Treaded Last =  WaitingProche->front();
+            WaitingProche->pop_front();
+            mutexPath.unlock();
+
+            GetPathTreadPr(Last);
+
+        }
+
+    }
+
+
+}
+
 bool T(Treaded &A, Treaded &B)
 {
     if(A.PositionDepart.first == B.PositionDepart.first && A.PositionDepart.second == B.PositionDepart.second)
@@ -247,6 +313,9 @@ void Path::AddPathTask(Treaded &TreadingInfo)
     //cout << __FUNCTION__ << "- line " << __LINE__ << " : " << Waiting->size() << endl;
 
         //mutexPath.lock();
+        if(10 >= dist(TreadingInfo.PositionDepart, TreadingInfo.arrivee) )
+        WaitingProche->push_back(TreadingInfo);
+        else
         Waiting->push_back(TreadingInfo);
         //mutexPath.unlock();
 
@@ -265,6 +334,11 @@ void Path::UnLockMutex()
 list<Treaded>* Path::GetWaitingAdd()
 {
     return Waiting;
+}
+
+list<Treaded>* Path::GetWaitingAddPr()
+{
+    return WaitingProche;
 }
 
 //revoire les fonctions de treading

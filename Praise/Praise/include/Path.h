@@ -20,7 +20,7 @@ class Path
         virtual ~Path();
 
         /** Path Initialisation : */
-        static void Init(std::vector<std::vector<int> > *WalkMap, std::list<Treaded> *pWaiting);
+        static void Init(std::vector<std::vector<int> > *WalkMap, std::list<Treaded> *pWaiting, std::list<Treaded> *pWaitingPr);
 
         /** Get du path */
         static void PathThread(Tinit &init);
@@ -28,6 +28,12 @@ class Path
         static void GetPathTread(Treaded &TreadingInfo);
         static void AddPathTask(Treaded &TreadingInfo);
         static std::list<Treaded>* GetWaitingAdd();
+
+        //Proche
+        static void GetPathTreadPr(Treaded &TreadingInfo);
+        static void PathThreadPr(Tinit &init);
+        static std::list<Treaded>* GetWaitingAddPr();
+
 
         /** Mutex */
         static void LockMutex();
@@ -42,6 +48,7 @@ class Path
     private:
     static std::vector< std::vector<int> > *Map;
     static std::list<Treaded> *Waiting;
+    static std::list<Treaded> *WaitingProche;
     static sf::Mutex mutexPath;
 
 };

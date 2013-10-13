@@ -38,7 +38,11 @@ int main()
     WalkMap = WorldMap.GetWalkMap();
 
     list<Treaded> Wt;
-    Path::Init(&WalkMap, &Wt);
+    list<Treaded> Wtp;
+    Path::Init(&WalkMap, &Wt, &Wtp);
+
+// A faire (Propriétaire#1#): faire une fonction de recherhce de chemin pour les petites distance qui ne soit pas la meme que les grande (2thread différent)
+
 
     //Tableau d'entité :
     vector<Entity> Entite;
@@ -54,7 +58,10 @@ int main()
     sf::Thread PathThreading(&Path::PathThread, Tinit(&App, Path::GetWaitingAdd()) );
     PathThreading.launch();
 
-    for(int d = 0; d < 100; d++)
+    sf::Thread PathThreadingPr(&Path::PathThreadPr, Tinit(&App, Path::GetWaitingAddPr()) );
+    PathThreadingPr.launch();
+
+    for(int d = 0; d < 5; d++)
     Entite.push_back(Entity(WorldMap.GetWalkTile()));
 
     App.setFramerateLimit(120);
@@ -112,21 +119,19 @@ int main()
 
         WorldMap.affMiniMap(App);
 
-        sf::Clock Test;
-        Test.restart();
-        //cout << __LINE__ << " : " << Test.getElapsedTime().asMicroseconds() << endl;
+
 
         EntWhile.restart();
-        //EntWhile.restart();
+
         while(i < Entite.size() && EntWhile.getElapsedTime() < sf::milliseconds(NO_LAG_TIME))
         {
+           cout << "Entity [" << i << "] : " << EntWhile.getElapsedTime().asMicroseconds() << endl;
            Entite[i].Action(WorldMap);
            i++;
         }
         if(i >= Entite.size())
         i = 0;
 
-        //cout << __LINE__ << " : " << Test.getElapsedTime().asMicroseconds() << endl;
 
         for(int j = 0; j < Entite.size(); j++)
         Entite[j].draw(App);

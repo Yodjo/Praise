@@ -34,7 +34,7 @@ class Entity
         void Ac_Rdm(Map &World);
         void Ac_Find_Tree(Map &World);
 
-        bool IsNextTo(sf::Vector2i Next, Map &World);
+        bool IsNextTo(sf::Vector2i &Next, Map &World);
 
         /** Entity affichage */
         void draw(sf::RenderWindow &App);
