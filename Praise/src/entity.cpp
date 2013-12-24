@@ -5,7 +5,7 @@ using namespace std;
 Entity::Entity()
 {
     Civ.Nom = "Humain";
-    Civ.Couleur = sf::Color(220, 200, 120);
+    Civ.Couleur = sf::Color(/*220, 200, 120*/255,000,000);
 
     Cherche = false;
 
@@ -14,17 +14,24 @@ Entity::Entity()
 
     Chemin.clear();
 
-    ActionLoop = CUT_TREE;
+    ActionLoop = NOTHING;
     SubActionLoop = TROUVE_ARBRE;
+
+    TerrainMaison = NULL;
 }
 
 Entity::Entity(sf::Vector2i nCoord)
 {
     Civ.Nom = "Humain";
-    Civ.Couleur = sf::Color(220, 200, 120);
+    Civ.Couleur = sf::Color(/*220, 200, 120*/255,000,000);
 
     Coord.x = nCoord.x;
     Coord.y = nCoord.y;
+
+    ActionLoop = NOTHING;
+    SubActionLoop = TROUVE_ARBRE;
+
+    TerrainMaison = NULL;
 }
 
 Entity::Entity(CivInfo nCiv)
@@ -33,6 +40,11 @@ Entity::Entity(CivInfo nCiv)
 
     Coord.x = 0;
     Coord.y = 0;
+
+    ActionLoop = NOTHING;
+    SubActionLoop = TROUVE_ARBRE;
+
+    TerrainMaison = NULL;
 }
 
 Entity::Entity(sf::Vector2i nCoord, CivInfo nCiv)
@@ -41,6 +53,11 @@ Entity::Entity(sf::Vector2i nCoord, CivInfo nCiv)
 
     Coord.x = nCoord.x;
     Coord.y = nCoord.y;
+
+    ActionLoop = NOTHING;
+    SubActionLoop = TROUVE_ARBRE;
+
+    TerrainMaison = NULL;
 }
 
 Entity::~Entity()
@@ -65,69 +82,36 @@ void Entity::draw(sf::RenderWindow &App)
 
 void Entity::Action(Map &World)
 {
-
-    //Deplacement sur une tile rdm
-    /*if(TimingAction.getElapsedTime() >= sf::milliseconds(ACTION_TIME))
-    {
-        if(Chemin.size() < 1 && Cherche == false)
-        {
-            //cout << "Recherche lancee : " << __LINE__  << " -- "<< Chemin.size() << endl;
-            sf::Vector2i Dest = World.GetWalkTile();
-
-            TimingAction.restart();
-
-            //Chemin = Path::GetPath(pair<int, int>(Coord.y,Coord.x), pair<int, int>(Dest.y, Dest.x));
-            Cherche = true;
-
-            return Treaded(&Chemin, pair<int, int>(Coord.y,Coord.x), pair<int, int>(Dest.y, Dest.x), &Cherche);
-        }
-        else if(Chemin.size() > 0)
-        {
-            cout << "Moving : " << __LINE__ << " -- " << Chemin.size() << endl;
-            Cherche = false;
-
-            Coord.x = Chemin[0].second;
-            Coord.y = Chemin[0].first;
-
-            Path::LockMutex();
-            Chemin.erase(Chemin.begin());
-            Path::UnLockMutex();
-
-            TimingAction.restart();
-
-            return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0), NULL);
-        }
-        else
-        {
-            //cout << "@ " << __LINE__ << " -- " << Chemin.size() << endl;
-            TimingAction.restart();
-
-            return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0), NULL);
-        }
-
-
-    }
-    else
-    return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0), NULL);*/
-
     //Action de base :
     if(TimingAction.getElapsedTime() >= sf::milliseconds(ACTION_TIME))
     {
-        //A attendu la fin du "tour" ( ACTION_TIME millisecondes -> actuellement 200 ms)
-        if(!Chemin.empty())  //Possede déjà un chemin (/objectif)
+         //A attendu la fin du "tour" ( ACTION_TIME millisecondes -> actuellement 200 ms)
+
+        if(ActionLoop == NOTHING && !Cherche)
+        {
+
+            if(!waitingArbre.empty())
+            ActionLoop = CUT_TREE;
+            else
+            ActionLoop = BUILD_HOUSE;
+        }
+
+        if(!Chemin.empty() && !Cherche)  //Possede déjà un chemin (/objectif)
         {
             //Si -1/-1 alors pas de chemin trouver pour un arbre (-1) et donc suppression du chemin et de l'action (arbre)
             if(Chemin[0].second == -1 && Chemin[0].first == -1)
             {
-               // cout << "+ pas de chemin : suppr l'arbre de la list : " << __LINE__ << endl;
-                waitingArbre.erase(waitingArbre.begin());
+               // if(!waitingArbre.empty() && ActionLoop == CUT_TREE)
+                //{
+                    //waitingArbre.erase(waitingArbre.begin());
+                    ActionLoop = NOTHING;
+                //}
+
                 Chemin.clear();
             }
             else
             {
                 //On se déplace et on mets a jour le chemin
-
-                ///       cout << "Moving : " << __LINE__ << " -- " << Chemin.size() << endl;
                 Cherche = false;
 
                 Coord.x = Chemin[0].second;
@@ -139,40 +123,76 @@ void Entity::Action(Map &World)
 
             }
 
-           // return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0), NULL);
-
-
         }
         else if(Chemin.empty() && !Cherche) //Pas de chemin donc on attend de choisir une action
         {
-            //cout << "TreeCuting : " << __LINE__ << " -- " << Chemin.size() << endl;
-// A faire (Propriétaire#9#): Faire que le chemin soit chercher a cahque fois en fonctikn de larbre le plus proche choisi + faire que  y est une action deplacement
-
             switch(ActionLoop)
             {
                 case CUT_TREE:  //Action de couper un arbre :
                 {
-                    ///cout << "Couper Abre : " << __LINE__ << " -- ";
                     if(waitingArbre.empty())    // - Si on a pas d'arbres en attente : on en ajoute
                     {
-                     ///  cout << "+ Ajouter un arbre : " << __LINE__ << endl;
                         Ac_Find_Tree(World);
                     }
-                    else if(!waitingArbre.empty() && Chemin.empty() && !Cherche) // - Si on a un/plusieurs arbres en attente : on les choisi ( le premier )
+                    else if(!waitingArbre.empty()) // - Si on a un/plusieurs arbres en attente : on les choisi ( le premier )
                     {
-
                         if(IsNextTo(waitingArbre[0], World)) //Si on est a coté de l'arbre 0 (le premier) alors on la coupe
                         {
-                          ///  cout << "+ Couper l'arbre : " << __LINE__ << /*" - PosArbre : " << waitingArbre[0].x << " " << waitingArbre[0].x  << " + PosEnt :" << Coord.x << " " << Coord.y <<*/ endl;
                             World.CutTree(waitingArbre[0]);
+                            Inventaire.Add(BUCHE);
                             waitingArbre.erase(waitingArbre.begin());
+
+                            Inventaire.Voir();
                         }
                         else //Sinon cherche le chemin vers le premier arbre.
                         {
-                         ///   cout << "+ Chercher le chemin vers un arbre : " << __LINE__ << endl;
                             Ac_Cut_Tree(World);
                         }
                     }
+
+                    ActionLoop = NOTHING;
+                }
+                break;
+
+                case BUILD_HOUSE:
+                {
+                    // 1 choisir un endroit:
+                        //Pas trop loin du la position actuelle :
+                    if(Cherche == false)
+                    {
+
+                    if(TerrainMaison == NULL)
+                    {
+                        sf::Vector2i PositionMaisonNew(Coord.x+rand()%20-10, Coord.y+rand()%20-10);
+                        TerrainMaison = World.addTerrain(PositionMaisonNew, 3);
+
+                        if(TerrainMaison == NULL)
+                        Ac_Rdm(World);
+
+                    }
+                    else
+                    {
+                        // 2 couper les arbres
+                        if(World.DefrichTerrain(TerrainMaison, &waitingArbre))
+                        {
+                            //3 construire la maison
+                            if(Coord != sf::Vector2i(TerrainMaison->left, TerrainMaison->top))
+                            {
+                                Cherche = true;
+                                Treaded A = Treaded(&Chemin, pair<int, int>(Coord.y,Coord.x), pair<int, int>(TerrainMaison->top, TerrainMaison->left), &Cherche);
+                                Path::AddPathTask(A);
+                            }
+                            else
+                            Ac_Rdm(World);
+                        }
+
+                        //cout << "Waitingarbre size : " << waitingArbre.size() << endl;
+
+                    }
+
+                    }
+
+                    ActionLoop = NOTHING;
                 }
                 break;
             }
@@ -180,30 +200,22 @@ void Entity::Action(Map &World)
         }
         else
         {
-            //cout << "Other : " << __LINE__ << " -- " << Chemin.size() << endl;
-            //cout << "@ " << __LINE__ << " -- " << Chemin.size() << endl;
             TimingAction.restart();
-
-            //return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0), NULL);
         }
-
     }
-
-    //else
-    //return Treaded(NULL, pair<int, int>(0, 0), pair<int, int>(0, 0), NULL);
 }
 
 //On regarde si l'entité est a coté de l'objet (a une case près)
-bool Entity::IsNextTo(sf::Vector2i Next, Map &World)
+bool Entity::IsNextTo(sf::Vector2i &Next, Map &World)
 {
     for(int x = -1; x < 2; x++)
     {
-        if(x + Coord.x < 0 || x+Coord.x > World.getSizeX())
+        if(x + Coord.x < 0 || x + Coord.x > World.getSizeX())
             continue;
 
         for(int y = -1; y < 2; y++)
         {
-            if(y+Coord.y < 0 ||y+Coord.y > World.getSizeY())
+            if(y + Coord.y < 0 ||y + Coord.y > World.getSizeY())
                 continue;
 
             if(Next.x == x+Coord.x && Next.y == y+Coord.y)
@@ -256,7 +268,6 @@ void Entity::Ac_Find_Tree(Map &World)
                     TreeY=3;
                     TreeX=3;
                     a++;
-                    cout << 'a' << endl;
                 }
                 break;
 
@@ -290,6 +301,8 @@ void Entity::Ac_Cut_Tree(Map &World)
                     Dest.x = TreeX + waitingArbre[0].x;
                     Dest.y = TreeY + waitingArbre[0].y;
 
+                    //cout << "Pos Tree X : " << waitingArbre[0].x << " et Pos Tree Y : " << waitingArbre[0].y << endl;
+
                     TreeY=3;
                     TreeX=3;
 
@@ -299,20 +312,15 @@ void Entity::Ac_Cut_Tree(Map &World)
             }
         }
 
-        if(Dest.x != -1 && Dest.y != -1)
+        if(Dest.x != -1 || Dest.y != -1)
         {
             TimingAction.restart();
 
-            //cout << "-> Position choisi : " << __LINE__  << " : " << Dest.x << " " << Dest.y << " walakble : " << World.isWalkable(Dest.x, Dest.y) <<endl;
-
-            if(sqrt((Dest.x-Coord.x)*(Dest.x-Coord.x) + (Dest.y-Coord.y)*(Dest.y-Coord.y)) < 5)
-            Chemin = Path::GetPath(pair<int, int>(Coord.y,Coord.x), pair<int, int>(Dest.y, Dest.x));
-            else
-            {
+            //cout << "-> Position choisi : " << __LINE__  << " : " << Dest.x << " " << Dest.y << " walkable : " << World.isWalkable(Dest.x, Dest.y) <<endl;
+            //faire que ce soit dans une autre boucle de recherche les truk proche
             Cherche = true;
             Treaded A = Treaded(&Chemin, pair<int, int>(Coord.y,Coord.x), pair<int, int>(Dest.y, Dest.x), &Cherche);
             Path::AddPathTask(A);
-            }
 
             SubActionLoop = COUPE_ARBRE;
         }

@@ -144,6 +144,10 @@ void Map::affMiniMap(sf::RenderWindow &App)
             {
                 imgMap.setPixel(i, j, sf::Color(20,100, 20));
             }
+            else if(TreeMap[j][i].Type == 3)
+            {
+                imgMap.setPixel(i, j, sf::Color(255,0, 0));
+            }
         }
 
     sf::Texture Txmap;
@@ -157,9 +161,9 @@ void Map::affMiniMap(sf::RenderWindow &App)
     App.draw(SpMap);
 }
 
-vector< vector<int> > Map::GetWalkMap()
+vector< vector<int> >* Map::GetWalkMap()
 {
-    return WalkMap;
+    return &WalkMap;
 }
 
 void Map::MajWalkRdm()
@@ -205,7 +209,7 @@ sf::Vector2i Map::GetTree(const sf::Vector2i &pos, const int VueSize)
     return sf::Vector2i(-1, -1);
 }
 
-int Map::isWalkable(const sf::Vector2i &pos)
+int Map::isWalkable(const sf::Vector2i &pos) //Retourne false si terrain infranchissable
 {
     if(pos.x > 0 && pos.y > 0 && pos.x < WalkMap.size() && pos.y < WalkMap.size())
     return WalkMap[pos.y][pos.x];
@@ -239,4 +243,64 @@ int Map::getSizeX()
 int Map::getSizeY()
 {
     return TiledMap.size();
+}
+
+sf::Rect<int>* Map::addTerrain(sf::Vector2i &PositionT, int sizeWH)
+{
+    sf::Rect<int> NewTerrain(sf::Vector2i(PositionT.x-sizeWH,PositionT.y-sizeWH), sf::Vector2i(sizeWH*2, sizeWH*2));
+
+    if(!TerrainConstr.empty())
+    {
+        for(int i = 0; i < TerrainConstr.size(); ++i)
+        {
+            if(TerrainConstr[i].intersects(NewTerrain))
+                return NULL;
+        }
+    }
+
+    for(int y = PositionT.y-sizeWH; y <= PositionT.y+sizeWH; ++y)
+    {
+        if(y >= TiledMap.size()-sizeWH)
+        return NULL;
+
+        if(y <= sizeWH)
+        return NULL;
+
+        for(int x = PositionT.x-sizeWH; x <= PositionT.x+sizeWH; ++x)
+        {
+            if(x >= TiledMap[0].size()-sizeWH)
+                return NULL;
+
+            if(x <= sizeWH)
+            return NULL;
+
+            if(TiledMap[y][x] == MONTAGNE || TiledMap[y][x] == EAU || TiledMap[y][x] == PIC)
+            {
+                return NULL;
+            }
+        }
+    }
+
+    TerrainConstr.push_back(NewTerrain);
+    return &(TerrainConstr.back());
+
+}
+
+bool Map::DefrichTerrain(sf::Rect<int> *Terrain, vector< sf::Vector2i > *waitingArbre)
+{
+    bool noTree = true;
+    for(int j = Terrain->top; j < Terrain->top+Terrain->height; ++j)
+    {
+        for(int i = Terrain->left; i < Terrain->left+Terrain->width; ++i)
+        {
+            if(TreeMap[j][i].Type != -1)
+            {
+                noTree = false;
+                TreeMap[j][i].Type = 3;
+                waitingArbre->push_back(sf::Vector2i(i,j));
+            }
+        }
+    }
+
+    return noTree;
 }

@@ -4,12 +4,15 @@
 #include <SFML/Graphics.hpp>
 #include <list>
 
+//Objet
+enum {BUCHE};
+
 enum {W_OUI, W_EAU, W_TREE, W_NON};
 enum {EAU, PLAGE, PLAINE, MONTAGNE, PIC};
 
 //Enumeration d'action
 //Action :
-enum {CUT_TREE, BUILD_HOUSE, CULTIVER};
+enum {NOTHING, CUT_TREE, BUILD_HOUSE, CULTIVER};
 //Sous  action :
     //Couper arbre :
 enum {TROUVE_ARBRE, ALLER_ARBRE, COUPE_ARBRE, ENTREPOSER_ARBRE};
@@ -36,7 +39,7 @@ struct Arbre
     }
 
     int Type;
-    int Taille;
+    int Taille = 1;
 };
 
 typedef struct Treaded Treaded;

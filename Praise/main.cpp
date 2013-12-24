@@ -13,7 +13,6 @@
 
            // cout <<  "line " << __LINE__ << endl;
 
-           //Todo : Crash du jeu
 
 using namespace std;
 
@@ -34,11 +33,13 @@ int main()
     Map WorldMap;
     WorldMap.Gen(300, 300);
 
-    vector< vector<int> > WalkMap;
+    vector< vector<int> > *WalkMap;
     WalkMap = WorldMap.GetWalkMap();
 
     list<Treaded> Wt;
-    Path::Init(&WalkMap, &Wt);
+    list<Treaded> Wtp;
+    Path::Init(WalkMap, &Wt, &Wtp);
+
 
     //Tableau d'entité :
     vector<Entity> Entite;
@@ -54,14 +55,19 @@ int main()
     sf::Thread PathThreading(&Path::PathThread, Tinit(&App, Path::GetWaitingAdd()) );
     PathThreading.launch();
 
-    for(int d = 0; d < 100; d++)
+    sf::Thread PathThreadingPr(&Path::PathThreadPr, Tinit(&App, Path::GetWaitingAddPr()) );
+    PathThreadingPr.launch();
+
+    for(int d = 0; d < 1; d++)
     Entite.push_back(Entity(WorldMap.GetWalkTile()));
 
-    App.setFramerateLimit(120);
+    App.setFramerateLimit(60);
 
     //Boucle d'action des entity.
     int i = 0;
     sf::Clock EntWhile;
+
+    bool gamePaused = false;
 
     // Start the game loop
     while (App.isOpen())
@@ -101,6 +107,13 @@ int main()
                 {
                     vue.zoom(1.5f);
                 }
+                if (event.key.code == sf::Keyboard::P)
+                {
+                    if(gamePaused)
+                    gamePaused = false;
+                    else
+                    gamePaused = true;
+                }
             }
 
 
@@ -112,21 +125,21 @@ int main()
 
         WorldMap.affMiniMap(App);
 
-        sf::Clock Test;
-        Test.restart();
-        //cout << __LINE__ << " : " << Test.getElapsedTime().asMicroseconds() << endl;
+
 
         EntWhile.restart();
-        //EntWhile.restart();
+
+        if(!gamePaused)
+        {
         while(i < Entite.size() && EntWhile.getElapsedTime() < sf::milliseconds(NO_LAG_TIME))
         {
+           //cout << "Entity [" << i << "] : " << EntWhile.getElapsedTime().asMicroseconds() << endl;
            Entite[i].Action(WorldMap);
            i++;
         }
         if(i >= Entite.size())
         i = 0;
-
-        //cout << __LINE__ << " : " << Test.getElapsedTime().asMicroseconds() << endl;
+        }
 
         for(int j = 0; j < Entite.size(); j++)
         Entite[j].draw(App);

@@ -15,13 +15,16 @@ class Stock
 {
     public:
         /** Default constructor */
-        Stock(int Msize);
+        Stock(int Msize = -1);
         /** Default destructor */
         virtual ~Stock();
 
         bool Contient(int Type);
         bool Use(int Type);
-        bool Add(int Type);
+        bool Add(int Type, int Nbr = 1);
+        bool UseMultiple(int Type, int Number = 1);
+
+        void Voir();
 
     protected:
     private:

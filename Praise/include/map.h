@@ -12,6 +12,10 @@
 #include "const.h"
 #include "noisegenerator.h"
 
+// A faire (Propriétaire#5#): Faire repousser les abres
+// A faire (Propriétaire#7#): faire un systeme de zone pour la construction.
+
+
 class Map
 {
     public:
@@ -25,7 +29,7 @@ class Map
         void MajWalkRdm();
 
         /** getter */
-        std::vector< std::vector<int> > GetWalkMap();
+        std::vector< std::vector<int> >* GetWalkMap();
         int getSizeX();
         int getSizeY();
         sf::Vector2i GetWalkTile();
@@ -34,6 +38,9 @@ class Map
         int isWalkable(const int x, const int y);
         int CutTree(const sf::Vector2i &pos);
 
+        sf::Rect<int>* addTerrain(sf::Vector2i &PositionT, int sizeWH);
+        bool DefrichTerrain(sf::Rect<int> *Terrain, std::vector< sf::Vector2i > *waitingArbre);
+
 
     protected:
     private:
@@ -41,6 +48,7 @@ class Map
         std::vector< std::vector<int> > WalkMap;
         std::vector< std::vector<Arbre> > TreeMap;
         std::vector<sf::Vector2i> RdmTile;
+        std::vector< sf::Rect<int> > TerrainConstr;
 
 };
 

@@ -1,4 +1,4 @@
-== 50% Praise ==
+== 71.56% Praise ==
 
 = Pathfinding	*100%*
 -Pathfinder fonction	100%
@@ -10,29 +10,32 @@
 --Conversion	100%
 -Génération des arbres 100%
 
-= Entity	*0%*
+= Entity	*43.125%*
 -Action :	0%
---Couper les arbres	0%
+--Couper les arbres	100%
 ---GetTree 100 %
----CutTree 0%
----Action_Tree 30%
----CutTreeZone 0%
----GetRessource 0%
+---CutTree 100%
+---Action_Tree 100%
+---CutTreeZone 100%
+---GetRessource 100%
 
---Entrepots 0% (1Tile d'entrepots = 2/3 item ?)
----Couper les arbre avant (10%)
----Definir une stockpile 0%
----PutRessource 0%
----GetRessource 0%
+--Entrepots 52.5% (1Tile d'entrepots = 2/3 item ?)
+---Couper les arbre avant (95%)
+---Definir une stockpile 5%
+---PutRessource 10%
+---GetRessource 100%
 
---Créer sa maison	0% (Une tile d'entrepots dans la maison)
----Couper les arbre avant (10%)
----Getressources 0%
----PutRessources 0%
+--Créer sa maison	20% (Une tile d'entrepots dans la maison)
+---Couper les arbre avant (100%)
+---Getressources 100%
+---PutRessources 10%
 ---Construire 0%
+---Charger le template 0%
+
+//Cyclique :
 
 --Cultiver un champ	0%
----Couper les arbre avant (10%)
+---Couper les arbre avant (95%)
 ---Retourner 0%
 ---Planter 0%
 ---Attendre 0%
